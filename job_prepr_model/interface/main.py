@@ -1,27 +1,28 @@
 import numpy as np
 import pandas as pd
 from colorama import Fore, Style
-from job_prepr_model.ml_logic.model import initialize_model, compile_model, train_model
-from job_prepr_model.ml_logic.data import load_train_data
+
+from job_prepr_model.ml_logic.model import initialize_model, compile_model, train_model, evaluate_model
+from job_prepr_model.ml_logic.data import load_train_data, load_test_data
 from job_prepr_model.ml_logic.encoders import label_encode
 from job_prepr_model.ml_logic.registry import get_model_version
 from job_prepr_model.ml_logic.registry import load_model, save_model
 
-#import "Grisearch" params
-from job_prepr_model.ml_logic.params import gridsearch_params,batch_size, learning_rate
-from job_prepr_model.utils.gridsearch import gridsearch_params_list
+#Import model and training params
+from job_prepr_model.ml_logic.params import model_params, train_params
+
 import time
 
-#batch_size = 128 #gridsearch_params['batch_size'][-1]
-patience = 5 #gridsearch_params['earlystopping_patience'][-1]
-validation_split = 0.2
-epochs=90
-maxpooling2d=gridsearch_params['maxpooling2d'][-1]
-kernel_size=gridsearch_params['kernel_size'][-1]
-kernel_size_detail=gridsearch_params['kernel_size_detail'][-1]
-last_dense_layer_neurons1=100 #gridsearch_params['last_dense_layer_neurons1'][-1]
-last_dense_layer_neurons2=30 #gridsearch_params['last_dense_layer_neurons2'][-1]
-activation_for_hidden=gridsearch_params['activation_for_hidden'][-1]
+maxpooling2d=model_params['maxpooling2d']
+kernel_size=model_params['kernel_size']
+kernel_size_detail=model_params['kernel_size_detail']
+last_dense_layer_neurons1=model_params['last_dense_layer_neurons1']
+last_dense_layer_neurons2=model_params['last_dense_layer_neurons2']
+activation_for_hidden=model_params['activation_for_hidden']
+batch_size=train_params['batch_size']
+patience=train_params['patience']
+validation_split=train_params['']
+epochs=train_params['epochs']
 
 def train():
 
@@ -46,36 +47,26 @@ def train():
 
     model, history = train_model(model, X, y_cat,
                                 batch_size=batch_size,
+                                patience=patience,
                                 validation_split=validation_split,
-                                epochs=epochs
+                                epochs=epochs,
                                 )
+
     params = dict(
-        # model parameters
-        learning_rate=learning_rate,
         batch_size=batch_size,
         patience=patience,
-        # package behavior
         context="train",
-        #chunk_size=CHUNK_SIZE,
-        # data source
         validation_split = validation_split,
-        #row_count=row_count,
         model_version=get_model_version()
-        #dataset_timestamp=get_dataset_timestamp(),
     )
-    val_accuracy = np.min(history.history['val_accuracy'])
 
+    val_accuracy = np.min(history.history['val_accuracy'])
     save_model(model=model, params=params, metrics=dict(mae=val_accuracy))
 
     return history
 
 
 def validate():
-    from job_prepr_model.ml_logic.model import evaluate_model
-    from job_prepr_model.ml_logic.data import load_test_data
-    from job_prepr_model.ml_logic.encoders import label_encode
-    from job_prepr_model.ml_logic.registry import load_model, save_model
-    from job_prepr_model.ml_logic.registry import get_model_version
 
     # load new data
     X, y = load_test_data()
@@ -86,69 +77,20 @@ def validate():
 
     metrics_dict = evaluate_model(model=model, X=X, y=y_cat)
 
-    #import ipdb; ipdb.set_trace()
-
     accuracy = metrics_dict[1]
-
     # save evaluation
     params = dict(
-        # model parameters
-        learning_rate=learning_rate,
         batch_size=batch_size,
         patience=patience,
-        # package behavior
         context="train",
-        #chunk_size=CHUNK_SIZE,
-        # data source
         validation_split = validation_split,
-        #row_count=row_count,
         model_version=get_model_version()
-        #dataset_timestamp=get_dataset_timestamp(),
     )
 
     save_model(params=params, metrics=dict(accuracy=accuracy))
 
     return accuracy
 
-def pred(X_pred):
-    pass
-
-
-def gridsearch_model(sample=None, epochs=epochs):
-
-    gp_list = gridsearch_params_list()
-    results = {
-        'grid_params':[],
-        'history':[],
-        'val_accuracy':[]
-    }
-    for params_dict in gp_list:
-
-        maxpooling2d=params_dict['maxpooling2d']
-        kernel_size=params_dict['kernel_size']
-        kernel_size_detail=params_dict['kernel_size_detail']
-        last_dense_layer_neurons1=params_dict['last_dense_layer_neurons1']
-        activation_for_hidden=params_dict['activation_for_hidden']
-
-        results['grid_params'].append(params_dict)
-        history = train(mode='hd',sample=sample)
-        results['history'].append(history)
-        val_accuracy = validate()
-        results['val_accuracy'].append(val_accuracy)
-
-    timestamp = time.strftime("%Y%m%d-%H%M%S")
-    np.save(f'results{timestamp}.npy',results)
-
-    return results
-
-
-
-
-
 if __name__ == '__main__':
-    #preprocess()
-    #preprocess(source_type='val')
     train()
     validate()
-    #pred()
-    #evaluate()

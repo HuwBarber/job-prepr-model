@@ -2,9 +2,8 @@ import pandas as pd
 import numpy as np
 from keras.preprocessing.image import load_img, img_to_array
 import os
-from job_prepr_model.ml_logic.params import (LOCAL_DATA_PATH, LOCAL_DATA_PATH_HD, batch_size)
+from job_prepr_model.ml_logic.params import LOCAL_DATA_PATH, LOCAL_DATA_PATH_HD
 import numpy as np
-
 
 train_path = os.path.join(LOCAL_DATA_PATH, 'train')
 test_path = os.path.join(LOCAL_DATA_PATH, 'validation')
