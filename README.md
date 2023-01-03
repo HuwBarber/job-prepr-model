@@ -28,7 +28,7 @@ The model building portion of the project used a number of technologies and fram
 - HuggingFace - Siebert for sentiment analysis
 - GCP - Deployment & speech-to-text API
 
-In addition to the technologies used by the frontend (linked at the top of this readme)
+in addition to the technologies used by the frontend (linked at the top of this readme).
 
 In addition, this project relies heavily on Google Cloud Services to run. The models were deployed as 2 Docker containers running on Cloud Run, one to handle the facial expressions and another to handle NLP. This allowed for concurrent processing to reduce a long wait time for users to get results.
 
