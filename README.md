@@ -1,7 +1,5 @@
 <h1 align='centre'>JobPrepr - Model</h1>
 
-
-
 **NOTE** - This is the backend model logic for the JobPrepr project, for the frontend user interface please visit https://github.com/HuwBarber/job-prepr-ui
 
 ## About the Project
