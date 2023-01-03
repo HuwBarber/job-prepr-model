@@ -1,18 +1,16 @@
 pandas
 numpy
 #Uncomment and install tensorflow if not deploying as a Docker container.
-tensorflow==2.7.0
+#tensorflow==2.7.0
 matplotlib
 notebook
 scikit-learn
 fastapi
 uvicorn
 python_dotenv
-
 ipdb
 colorama
 mlflow
-
 #for nlp
 google-cloud-storage
 google-cloud-speech

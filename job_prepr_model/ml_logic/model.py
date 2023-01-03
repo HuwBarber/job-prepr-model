@@ -4,8 +4,6 @@ from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.optimizers.schedules import ExponentialDecay
 from tensorflow.keras.optimizers import Adam
 
-
-
 def initialize_model(X,y_cat_len,
                      Xshape,
                      maxpooling2d=2,
