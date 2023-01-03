@@ -25,6 +25,8 @@ The model building portion of the project used a number of technologies and fram
 - Tensorflow Keras - CNN facial emotion recognition
 - FastAPI
 - Docker
+- HuggingFace - Siebert for sentiment analysis
+- GCP - Deployment & speech-to-text API
 
 In addition to the technologies used by the frontend (linked at the top of this readme)
 
